@@ -4,8 +4,13 @@ trigger:
 pool:
   name: Default
 
+variables:
+  DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER: 0
+
 steps:
 - task: NuGetToolInstaller@1
+  inputs:
+    versionSpec: '6.x'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore'
@@ -28,6 +33,9 @@ steps:
     configuration: 'Release'
     outputDir: '$(Build.ArtifactStagingDirectory)'
 
+- task: NuGetAuthenticate@1
+  displayName: 'Authenticate NuGet'
+
 - task: NuGetCommand@2
   displayName: 'Push to Azure Artifacts'
   inputs:
@@ -35,3 +43,4 @@ steps:
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Lab4-ArtifactCI/Lab4Feed'
+    allowPackageConflicts: true
