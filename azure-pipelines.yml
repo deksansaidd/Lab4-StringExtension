@@ -19,11 +19,12 @@ steps:
     projects: '**/StringExtensionsLib.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Build'
+  displayName: 'Push to Azure Artifacts'
   inputs:
-    command: 'build'
-    projects: '**/StringExtensionsLib.csproj'
-    arguments: '--configuration Release'
+    command: 'push'
+    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
+    nuGetFeedType: 'internal'
+    publishVstsFeed: 'Lab4-ArtifactCI/Lab4Feed'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack NuGet'
