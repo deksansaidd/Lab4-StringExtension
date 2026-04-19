@@ -4,13 +4,8 @@ trigger:
 pool:
   name: Default
 
-variables:
-  DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER: 0
-
 steps:
 - task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: '6.x'
 
 - task: DotNetCoreCLI@2
   displayName: 'Restore'
@@ -19,12 +14,11 @@ steps:
     projects: '**/StringExtensionsLib.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: 'Push to Azure Artifacts'
+  displayName: 'Build'
   inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'Lab4-ArtifactCI/Lab4Feed'
+    command: 'build'
+    projects: '**/StringExtensionsLib.csproj'
+    arguments: '--configuration Release'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack NuGet'
@@ -32,16 +26,11 @@ steps:
     command: 'pack'
     packagesToPack: '**/StringExtensionsLib.csproj'
     configuration: 'Release'
-    outputDir: '$(Build.ArtifactStagingDirectory)'
 
-- task: NuGetAuthenticate@1
-  displayName: 'Authenticate NuGet'
-
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'Push to Azure Artifacts'
   inputs:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
     publishVstsFeed: 'Lab4-ArtifactCI/Lab4Feed'
-    allowPackageConflicts: true
