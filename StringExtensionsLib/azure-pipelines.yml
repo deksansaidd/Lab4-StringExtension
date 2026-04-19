@@ -34,4 +34,4 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg'
     nuGetFeedType: 'internal'
-    publishVstsFeed: 'Lab4Feed'
+    publishVstsFeed: 'Lab4-ArtifactCI/Lab4Feed'
